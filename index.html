@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>没法卷的赛道 · 核心素养与AI时代</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1c1410;
+    --ink-light: #4a3f35;
+    --paper: #faf6ef;
+    --paper-warm: #f5ede0;
+    --rust: #b05a2a;
+    --rust-light: #d4845a;
+    --sage: #7a8c6e;
+    --sage-light: #a8b89a;
+    --gold: #c49a3c;
+    --gold-light: #e8c878;
+    --blush: #d4967a;
+    --line: rgba(28,20,16,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Serif SC', serif;
+    line-height: 1.9;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  /* Cover */
+  .cover {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+    background: var(--ink);
+  }
+
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 20% 80%, rgba(176,90,42,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 85% 10%, rgba(122,140,110,0.2) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(196,154,60,0.08) 0%, transparent 70%);
+  }
+
+  .cover-deco {
+    position: absolute;
+    top: 0; right: 0;
+    width: 45%;
+    height: 100%;
+    opacity: 0.06;
+    background: repeating-linear-gradient(
+      -45deg,
+      #fff 0px,
+      #fff 1px,
+      transparent 1px,
+      transparent 20px
+    );
+  }
+
+  .cover-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .cover-circle:nth-child(1) { width: 500px; height: 500px; top: -150px; right: -100px; }
+  .cover-circle:nth-child(2) { width: 300px; height: 300px; bottom: 100px; right: 150px; border-color: rgba(196,154,60,0.15); }
+  .cover-circle:nth-child(3) { width: 180px; height: 180px; top: 40%; left: 5%; border-color: rgba(122,140,110,0.2); }
+
+  .cover-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 800px;
+  }
+
+  .cover-label {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .cover-title {
+    font-size: clamp(42px, 8vw, 80px);
+    font-weight: 300;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+
+  .cover-title em {
+    font-style: normal;
+    color: var(--gold-light);
+    display: block;
+  }
+
+  .cover-subtitle {
+    font-size: clamp(15px, 2.5vw, 20px);
+    color: rgba(255,255,255,0.5);
+    font-weight: 300;
+    margin-top: 16px;
+    margin-bottom: 50px;
+    max-width: 560px;
+    opacity: 0;
+    animation: fadeUp 1s 0.7s forwards;
+  }
+
+  .cover-line {
+    width: 60px;
+    height: 2px;
+    background: var(--rust-light);
+    margin-bottom: 50px;
+    opacity: 0;
+    animation: fadeUp 1s 0.9s forwards;
+  }
+
+  .cover-quote {
+    font-size: 14px;
+    color: rgba(255,255,255,0.4);
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+    max-width: 480px;
+    opacity: 0;
+    animation: fadeUp 1s 1.1s forwards;
+  }
+
+  .cover-footer {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    opacity: 0;
+    animation: fadeIn 1s 1.5s forwards;
+  }
+
+  .cover-nav {
+    display: flex;
+    gap: 28px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .cover-scroll {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.2em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .scroll-line {
+    width: 40px;
+    height: 1px;
+    background: rgba(255,255,255,0.2);
+  }
+
+  /* Main content */
+  .main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 80px 40px 120px;
+  }
+
+  /* Pull quote / opener */
+  .opener {
+    margin-bottom: 80px;
+    padding: 50px 0;
+    border-top: 2px solid var(--rust);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+
+  .opener::before {
+    content: '\201C';
+    font-family: 'Playfair Display', serif;
+    font-size: 120px;
+    color: var(--rust);
+    opacity: 0.15;
+    position: absolute;
+    top: -10px;
+    left: -20px;
+    line-height: 1;
+  }
+
+  .opener p {
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--ink);
+  }
+
+  .opener em {
+    font-style: normal;
+    color: var(--rust);
+    font-weight: 500;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 72px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .section.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .section-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    color: var(--rust);
+    opacity: 0.2;
+    line-height: 1;
+    font-weight: 400;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: clamp(18px, 2.5vw, 23px);
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  .section-title span {
+    display: block;
+    font-size: 12px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 300;
+    color: var(--rust-light);
+    letter-spacing: 0.3em;
+    margin-bottom: 4px;
+  }
+
+  .section p {
+    font-size: 16px;
+    color: var(--ink-light);
+    margin-bottom: 20px;
+    line-height: 1.95;
+  }
+
+  .section p:last-child { margin-bottom: 0; }
+
+  /* Highlight box */
+  .highlight {
+    background: var(--paper-warm);
+    border-left: 3px solid var(--rust);
+    padding: 24px 28px;
+    margin: 32px 0;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .highlight p {
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 0;
+    font-style: italic;
+  }
+
+  /* Quality grid / Seed types */
+  .qualities {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+
+  .quality-card {
+    padding: 24px 20px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+  }
+
+  .quality-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(28,20,16,0.08);
+    border-color: var(--rust-light);
+  }
+
+  .quality-icon {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .quality-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .quality-desc {
+    font-size: 12px;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--ink-light);
+    line-height: 1.6;
+  }
+
+  /* Pull quote */
+  .pull-quote {
+    margin: 48px -20px;
+    padding: 40px 40px;
+    background: var(--ink);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pull-quote::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 80% 50%, rgba(176,90,42,0.3), transparent 60%);
+  }
+
+  .pull-quote p {
+    font-size: clamp(18px, 2.5vw, 22px);
+    font-weight: 300;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.9);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0;
+  }
+
+  .pull-quote em {
+    font-style: normal;
+    color: var(--gold-light);
+  }
+
+  /* Special Dark section */
+  .alaya-section {
+    background: linear-gradient(135deg, #1c1410 0%, #2d2018 100%);
+    color: #fff;
+    padding: 48px 40px;
+    margin: 48px -20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .alaya-section::after {
+    content: '过程';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 100px;
+    font-weight: 700;
+    font-family: 'Noto Serif SC', serif;
+    color: rgba(255,255,255,0.03);
+    pointer-events: none;
+    letter-spacing: 0.1em;
+  }
+
+  .alaya-section .section-title {
+    color: #fff;
+  }
+
+  .alaya-section .section-title span {
+    color: var(--blush);
+  }
+
+  .alaya-section p {
+    color: rgba(255,255,255,0.7);
+  }
+
+  .alaya-section .section-num {
+    color: var(--blush);
+    opacity: 0.4;
+  }
+
+  .alaya-cards {
+    display: grid;
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .alaya-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .alaya-card-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .alaya-card-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 4px;
+    font-family: 'Noto Serif SC', serif;
+  }
+
+  .alaya-card-text {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.7;
+  }
+
+  /* Closing */
+  .closing {
+    margin-top: 80px;
+    padding-top: 60px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+
+  .closing-ornament {
+    font-size: 32px;
+    margin-bottom: 28px;
+    display: block;
+    opacity: 0.4;
+  }
+
+  .closing-text {
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--ink);
+    max-width: 560px;
+    margin: 0 auto 32px;
+  }
+
+  .closing-text em {
+    font-style: normal;
+    color: var(--rust);
+    font-weight: 500;
+  }
+
+  .closing-sign {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px;
+    color: var(--ink-light);
+    letter-spacing: 0.3em;
+    opacity: 0.6;
+  }
+
+  /* Divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 48px 0;
+    opacity: 0.3;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: var(--ink); }
+  .divider-dot { width: 4px; height: 4px; background: var(--rust); border-radius: 50%; }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .cover { padding: 40px 24px 36px; }
+    .main { padding: 48px 24px 80px; }
+    .pull-quote, .alaya-section { margin: 32px -10px; padding: 32px 24px; }
+    .qualities { grid-template-columns: repeat(2, 1fr); }
+    .opener::before { font-size: 80px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cover -->
+<div class="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-deco"></div>
+  <div class="cover-circle"></div>
+  <div class="cover-circle"></div>
+  <div class="cover-circle"></div>
+
+  <div class="cover-content">
+    <p class="cover-label">教育观察 · 核心素养 · AI时代</p>
+    <h1 class="cover-title">
+      没法卷的赛道
+      <em>核心素养与AI学习的底层逻辑</em>
+    </h1>
+    <p class="cover-subtitle">为什么应试教育可以卷，而核心素养和AI技能却从根上卷不动</p>
+    <div class="cover-line"></div>
+    <p class="cover-quote">"卷的本质是用可复制的方法批量获取可量化的结果，但核心素养只能在真实情境里展现，不能在模拟情境里批量生产。"</p>
+  </div>
+
+  <div class="cover-footer">
+    <div class="cover-nav">
+      <span>指标可量化</span>
+      <span>过程导向</span>
+      <span>底层能力</span>
+    </div>
+    <div class="cover-scroll">
+      <div class="scroll-line"></div>
+      <span>向下阅读</span>
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- Opener -->
+  <div class="opener">
+    <p>最近有一种声音在家长们之间蔓延开来："高考考的东西都是AI擅长的，未来这条路怕是走不通了……听说现在要改培养孩子的核心素养，还要让孩子早点学AI。"很多家长听了心里想：这是又要逼我把赛道从应试教育切换到核心素养和AI学习，继续卷吗？但这个赛道真的没法卷。<em>不是卷不动或卷不过，而是"卷"的逻辑在这条赛道从根上就行不通。</em></p>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">一</span>
+      <h2 class="section-title">
+        <span>Why Exam-Oriented Works</span>
+        卷应试为什么是理性的
+      </h2>
+    </div>
+    <p>批评应试教育的文章很多，但得承认一件事：在一定条件下，卷应试是理性的。</p>
+    <p>它的逻辑之所以成立，是因为三个前提同时满足：指标可量化（分数客观，没有争议）、训练可标准化（刷题方法可复制）、回报路径相对稳定（好大学→好专业→好工作，这条链条大体可信）。</p>
+    
+    <div class="qualities">
+      <div class="quality-card">
+        <span class="quality-icon">📊</span>
+        <div class="quality-name">指标可量化</div>
+        <div class="quality-desc">分数客观，没有争议，投入能对应清晰结果</div>
+      </div>
+      <div class="quality-card">
+        <span class="quality-icon">📋</span>
+        <div class="quality-name">训练可标准化</div>
+        <div class="quality-desc">刷题方法可复制，批量获取结果成为可能</div>
+      </div>
+      <div class="quality-card">
+        <span class="quality-icon">🛤️</span>
+        <div class="quality-name">回报路径稳定</div>
+        <div class="quality-desc">好大学→好专业→好工作，链条大体可信</div>
+      </div>
+    </div>
+
+    <p>这三个条件同时成立，投入才能换来可预期的产出。卷应试是一场规则明确的比赛，虽然激烈，但有章可循。卷的本质是用可复制的方法批量获取可量化的结果。</p>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+
+  <!-- Section 2 -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">二</span>
+      <h2 class="section-title">
+        <span>Why Core Literacy Can't Be Rolled</span>
+        核心素养为什么卷不了
+      </h2>
+    </div>
+    <p>核心素养只能在真实情境里展现，不能在模拟情境里批量生产，且无法用数字来量化。</p>
+    
+    <div class="highlight">
+      <p>创造力是长期沉浸在某个真正着迷的领域里，带着好奇心反复琢磨，一点点浸泡出来的。领导力是在真实的团队里，处理真实的冲突、承担真实的责任之后，才知道自己胜不胜任。共情力是在一次次真实的相处里，倾听真实的感受、理解真实的处境之后，才慢慢沉淀出来的。</p>
+    </div>
+
+    <p>这些素养是在真实生活里"生长"出来的，不是在课堂里"训练"出来的，也不是一张纸能"证明"出来的。如果普通家庭硬要去卷，很可能比应试内卷输得更惨、输得更看不清楚。</p>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+
+  <!-- Section 3 -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">三</span>
+      <h2 class="section-title">
+        <span>AI Skills Are a Moving Target</span>
+        AI学习为什么同样卷不了
+      </h2>
+    </div>
+    <p>AI工具的迭代速度，大约每六到十二个月就完成一次代际更替。今天决定让孩子认真学提示词工程、学某个AI工具的操作，三年后这门手艺大概率已经被更傻瓜的界面取代。以"工具使用"为目标的AI学习，本身就是一个移动靶，追不上，也不值得追。</p>
+    
+    <div class="highlight">
+      <p>真正能驾驭AI的人，靠的不是AI技能。真正能从AI时代获益的人，他们的核心能力是判断力——知道什么问题值得问，什么答案值得信；是品味——能分辨AI产出里什么是好的；是真正的领域知识——能驾驭AI的前提，是你比AI更清楚这个领域里什么重要；是独立思考——在AI把所有人的输出拉平之后，你的差异来自你自己怎么想。</p>
+    </div>
+
+    <p>绕了一圈，能真正驾驭AI的元能力，就是核心素养本身。两件事指向同一个根，而那个根，正是上面说的卷不出来的东西。</p>
+  </div>
+
+  <!-- Pull Quote -->
+  <div class="pull-quote section" id="pq">
+    <p>应试教育是<em>结果导向</em>的，核心素养是<em>过程导向</em>的。在应试教育里，结果和过程紧紧相连，一张高分卷子基本就证明过程走得很顺利。但在核心素养这里，没有一套标准化训练能把结果和过程焊在一起——素养只在过程中得以显现。</p>
+  </div>
+
+  <!-- Section 4: Dark section -->
+  <div class="section alaya-section" id="s4">
+    <div class="section-header">
+      <span class="section-num">四</span>
+      <h2 class="section-title">
+        <span>Result vs Process</span>
+        结果导向的陷阱与过程的空心化
+      </h2>
+    </div>
+    <p>未来，一旦"核心素养""AI启蒙"这类概念真正市场化，打着这些旗号的产品，往往也都是结果导向性的，因为它更容易实现规模化变现，而过程导向性的教育过于仰仗老师的个性化服务水准。</p>
+    <p>除此之外，家长自身的心理需求（结果导向更能带来确定感以缓解焦虑，成果更容易被外界看见以获得认可）也会在客观上助推这个趋势。</p>
+
+    <div class="alaya-cards">
+      <div class="alaya-card">
+        <span class="alaya-card-icon">🎭</span>
+        <div>
+          <div class="alaya-card-title">呈现成果，而非真正生长</div>
+          <div class="alaya-card-text">孩子学到的极有可能是如何在这套评价体系里呈现出一些成果，让家长以为某种素养得到了培养，而不是在过程中如何调用自己的素养去感受和思考——他回应的是父母的期待，而不是自身的兴趣。</div>
+        </div>
+      </div>
+      <div class="alaya-card">
+        <span class="alaya-card-icon">⏳</span>
+        <div>
+          <div class="alaya-card-title">虚假的安全感</div>
+          <div class="alaya-card-text">孩子消耗了大量时间和精力，本可以用来投入到真正感兴趣的领域带来素养的提升，此外还给家长和孩子制造出一种虚假的"已经培养过了"的安全感，而真正需要那些素养发挥的时刻到来时，往往什么都抓不着。</div>
+        </div>
+      </div>
+    </div>
+
+    <p>比如孩子用AI画出一幅优秀作品，从成果本身已经无法判断，这当中有多少是孩子自身的创造力、想象力和审美力在发挥作用，只能回过头仔细去看过程。越是习惯性地盯着结果，就越容易对背后空掉的过程视而不见——这是很多家长很难察觉，也很容易掉进去的坑。</p>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+
+  <!-- Section 5 -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">五</span>
+      <h2 class="section-title">
+        <span>Uncertainty and the Illusion of Certainty</span>
+        不确定的未来与确定性的幻觉
+      </h2>
+    </div>
+    <p>卷这件事有一个前提：存在一个稳定的、可以提前预判的好未来，而通往那个未来的席位是有限的，卷赢是进入那些席位的唯一方式。</p>
+    <p>这个假设在AI时代正面临根本性的挑战——职业路径的半衰期在缩短，回报的分配方式在变，至少在部分行业，赢家通吃的趋势在加剧，中间层正在被压缩。在一个高度不确定的系统里，找到下一个可以卷赢的标准答案，本身就是一种对确定性的幻觉。</p>
+    
+    <div class="highlight">
+      <p>面对一个充满变数的未来，错误的努力方向，比不努力更耗损人。尤其对普通家庭来说，最明智的做法或许是保存好手中的筹码，不要轻易押注某一条具体赛道的输赢，让孩子的自我价值感过多系于某一次筛选的成败。</p>
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-dot"></div><div class="divider-line"></div></div>
+
+  <!-- Section 6 -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">六</span>
+      <h2 class="section-title">
+        <span>Back to the Roots</span>
+        把资源转向底层能力
+      </h2>
+    </div>
+    <p>相比于尽快找到下一条能卷赢的赛道，更应该尽早看清现实当中的误区，把有限的资源，从"押注某条外部赛道"，转移到孩子自身的底层能力上——扎实的学习能力和知识迁移能力、能扛住失败和挫折的心理弹性、由内在兴趣驱动的动机系统、稳定的身心状态……</p>
+    <p>刚提的这些又回到核心素养上了。其实条条赛道都通往核心素养（包括应试教育），关键孩子和家长以什么方式参与其中——是主动融进去的，还是被动卷进去的；是探索整个过程，还是紧盯着结果。</p>
+  </div>
+
+  <!-- Closing -->
+  <div class="closing section" id="closing">
+    <span class="closing-ornament">✦</span>
+    <p class="closing-text">
+      核心素养不是下一条可以卷赢的赛道。<em>它是生长在真实过程里的东西</em>，无法被批量生产，也无法被一张成绩单证明。守住过程，<em>把资源放回孩子自身的底层能力上</em>。
+    </p>
+    <p class="closing-sign">· 没法卷的赛道 · 核心素养与AI学习的底层逻辑 ·</p>
+  </div>
+
+</main>
+
+<script>
+  // Intersection Observer 滚动渐入效果
+  const sections = document.querySelectorAll('.section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
